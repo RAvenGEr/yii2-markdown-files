@@ -6,7 +6,7 @@ use yii;
 use \yii\helpers\FileHelper;
 
 class Module extends \yii\base\Module implements \yii\base\BootstrapInterface {
-  public $posts;
+  public $pages;
   public $drafts;
 
   public $file_regex = '/([[:digit:]]{4})-([[:digit:]]{2})-([[:digit:]]{2})_([0-9a-z_]*).md$/i';
@@ -17,7 +17,7 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface {
   public function create($title) {
     $filename = date('Y-m-d').'_'.$title.'.md';
     if($this->parseName($filename)) {
-      if($path = $this->getPath("$this->posts/$filename")) {
+      if($path = $this->getPath("$this->pages/$filename")) {
         FileHelper::createDirectory(dirname($path), 0775, true);
         $fhandle = fopen($path, 'wb');
         if($fhandle === false) throw Exception('Cannot create file: '.$path);
@@ -39,7 +39,7 @@ HEREDOC;
   }
 
   public function fetch($params = ['recursive'=>false, 'only'=> ['*.md']]) {
-    $files = FileHelper::findFiles($this->getPath($this->posts), $params);
+    $files = FileHelper::findFiles($this->getPath($this->pages), $params);
     if(defined('YII_ENV') && (YII_ENV==='dev' || YII_ENV==='test')) {
       $files = array_merge($files, FileHelper::findFiles($this->getPath($this->drafts), $params));
     }
