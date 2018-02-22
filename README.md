@@ -19,7 +19,7 @@ Enable the module by adding the snippet below to your main.php configuration fil
 'modules' => [
   'pages' => [ // name this module what you like
     'class' => \dpwlabs\MarkdownPages\Module::className(),
-    'posts' => '@frontend/views/markdown/pages',
+    'pages' => '@frontend/views/markdown/pages',
     'drafts' => '@frontend/views/markdown/drafts',
   ]
 ],
