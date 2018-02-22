@@ -5,7 +5,7 @@ namespace dpwlabs\MarkdownPages;
 use yii;
 use \yii\helpers\FileHelper;
 
-class Module extends \yii\base\Module implements \yii\base\BootstrapInterface {
+class Module extends \yii\base\Module {
   public $pages;
   public $drafts;
 
