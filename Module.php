@@ -1,6 +1,6 @@
 <?php
 
-namespace corwatts\MarkdownFiles;
+namespace dpwlabs\MarkdownPages;
 
 use yii;
 use \yii\helpers\FileHelper;
@@ -13,15 +13,6 @@ class Module extends \yii\base\Module implements \yii\base\BootstrapInterface {
 
   public $files;
   public $results;
-
-  public function bootstrap($app) {
-    if ($app instanceof \yii\console\Application) {
-      $app->controllerMap[$this->id] = [
-        'class' => 'corwatts\MarkdownFiles\commands\BlogController',
-        'module' => $this,
-      ];
-    }
-  }
 
   public function create($title) {
     $filename = date('Y-m-d').'_'.$title.'.md';
@@ -78,6 +69,28 @@ HEREDOC;
     return $this;
   }
 
+  public function page($page, $params = ['recursive'=>false, 'only'=> ['*.md']]) {
+	  $this->fetch($params);
+	  foreach ($this->files as $file) {
+		  if (Module::endswith($file, $page . '.md')) {
+			  $date = $this->parseName($file);
+			  if ($date) {
+				  $parser = new \Hyn\Frontmatter\Parser(new \cebe\markdown\Markdown);
+				  $parser->setFrontmatter(\Hyn\Frontmatter\Frontmatters\YamlFrontmatter::class);
+				  $parsed = $parser->parse(file_get_contents($file));
+				  return ['date' => $date, 'yaml' => $parsed['meta'], 'content' => $parsed['html'],];
+			  }
+		  }
+	  }
+  }
+  
+  public static function endswith($string, $test) {
+    $strlen = strlen($string);
+    $testlen = strlen($test);
+    if ($testlen > $strlen) return false;
+    return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
+  }
+  
   public function parseName($filepath) {
     if(preg_match($this->file_regex, $filepath, $matches)) {
       return [

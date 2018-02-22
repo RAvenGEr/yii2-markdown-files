@@ -1,5 +1,5 @@
 {
-  "name": "corwatts/yii2-markdown-files",
+  "name": "dpwlabs/yii2-markdown-pages",
   "description": "A simple flat-file Markdown renderer",
   "keywords": [
     "yii2",
@@ -8,18 +8,18 @@
     "file",
     "markdown"
   ],
-  "homepage": "https://github.com/CorWatts/yii2-markdown-files",
+  "homepage": "https://github.com/RAvenGEr/yii2-markdown-pages",
   "type": "yii2-extension",
   "license": "BSD-3-Clause",
   "authors": [
     {
-      "name": "Corey Watts",
-      "email": "corey@haaswatts.com"
+      "name": "David Webb",
+      "email": "david@dpwlabs.com"
     }
   ],
   "support": {
-    "issues": "https://github.com/CorWatts/yii2-markdown-files/issues",
-    "source": "https://github.com/CorWatts/yii2-markdown-files"
+    "issues": "https://github.com/RAvenGEr/yii2-markdown-pages/issues",
+    "source": "https://github.com/RAvenGEr/yii2-markdown-pages"
   },
   "scripts": {
     "test": "codecept run",
@@ -39,7 +39,7 @@
   },
   "autoload": {
     "psr-4": {
-      "corwatts\\MarkdownFiles\\": ""
+      "dpwlabs\\MarkdownPages\\": ""
     }
   }
 }

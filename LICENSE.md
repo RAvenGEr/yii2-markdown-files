@@ -1,6 +1,7 @@
 BSD 3-Clause License
 
 Copyright (c) 2017, Corey Watts
+Copyright (c) 2018, David Webb
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
