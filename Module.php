@@ -68,14 +68,21 @@ HEREDOC;
     $this->results = $posts;
     return $this;
   }
+  
+  public function rawPage($page, $params = ['recursive' => false, 'only' => ['*.md']]) {
+    return $this->page($page, $params, new NullParser);
+  }
 
-  public function page($page, $params = ['recursive'=>false, 'only'=> ['*.md']]) {
+  public function page($page, $params = ['recursive'=>false, 'only'=> ['*.md']], $mdparser = null) {
 	  $this->fetch($params);
 	  foreach ($this->files as $file) {
 		  if (Module::endswith($file, $page . '.md')) {
 			  $date = $this->parseName($file);
 			  if ($date) {
-				  $parser = new \Hyn\Frontmatter\Parser(new \cebe\markdown\Markdown);
+                  if ($mdparser === null) {
+                    $mdparser = new \cebe\markdown\Markdown;
+                  }
+				  $parser = new \Hyn\Frontmatter\Parser($mdparser);
 				  $parser->setFrontmatter(\Hyn\Frontmatter\Frontmatters\YamlFrontmatter::class);
 				  $parsed = $parser->parse(file_get_contents($file));
 				  return ['date' => $date, 'yaml' => $parsed['meta'], 'content' => $parsed['html'],];
