@@ -14,11 +14,11 @@ class Module extends \yii\base\Module {
   public $results;
   public $params = ['recursive' => false, 'only' => ['*.md']];
 
-  public function create($name, $title, $author, $content = "") {
-    return save(date('Y-m-d'), $name, $author, $content);
+  public function create($name, $title, $author, $content = "", $tags = "", $subtitle = "", $excerpt = "") {
+    return save(date('Y-m-d'), $name, $author, $content, $tags, $subtitle, $excerpt);
   }
 
-  public function save($date, $name, $title, $author, $content = "") {
+  public function save($date, $name, $title, $author, $content = "", $tags = "", $subtitle = "", $excerpt = "") {
     $filename = $date . '_' . $name . '.md';
     if ($this->parseName($filename)) {
       if ($path = $this->getPath("$this->pages/$filename")) {
@@ -31,6 +31,8 @@ class Module extends \yii\base\Module {
 ---------
 author: "$author"
 title: "$title"
+subtitle: "$subtitle"
+excerpt: "$excerpt"
 ---------
 
 $content
@@ -58,11 +60,11 @@ HEREDOC;
 
     $posts = [];
     foreach ($this->files as $file) {
-      $date = $this->parseName($file);
-      if ($date) {
+      $details = $this->parseName($file);
+      if ($details) {
         $parsed = $parser->parse(file_get_contents($file));
         array_push($posts, [
-            'date' => $date,
+            'details' => $details,
             'yaml' => $parsed['meta'],
             'content' => $parsed['html'],
         ]);
@@ -82,35 +84,35 @@ HEREDOC;
     $this->fetch($this->params);
     foreach ($this->files as $file) {
       if (Module::endswith($file, $name . '.md')) {
-        $date = $this->parseName($file);
-        if ($date) {
+        $details = $this->parseName($file);
+        if ($details) {
           if ($mdParser === null) {
             $mdParser = new \cebe\markdown\Markdown;
           }
           $parser = new \Hyn\Frontmatter\Parser($mdParser);
           $parser->setFrontmatter(\Hyn\Frontmatter\Frontmatters\YamlFrontmatter::class);
           $parsed = $parser->parse(file_get_contents($file));
-          return ['date' => $date, 'yaml' => $parsed['meta'], 'content' => $parsed['html'],];
+          return ['details' => $details, 'yaml' => $parsed['meta'], 'content' => $parsed['html'],];
         }
       }
     }
   }
 
-  public function savePage($name, $title, $author, $content, $date = null) {
+  public function savePage($name, $title, $author, $content, $tags, $subtitle, $excerpt = "", $date = null) {
     $this->fetch($this->params);
     if ($date === null) {
       $date = date('Y-m-d');
     }
     foreach ($this->files as $file) {
       if (Module::endswith($file, $name . '.md')) {
-        $oldDate = $this->parseName($file);
-        if ($oldDate !== $date) {
+        $oldDetails = $this->parseName($file);
+        if ($oldDetails && $oldDetails['date'] !== $date) {
           unlink($file);
         }
         break;
       }
     }
-    $this->save($date, $name, $title, $author, $content);
+    $this->save($date, $name, $title, $author, $content, $tags, $subtitle, $excerpt);
   }
 
   public static function endswith($string, $test) {
@@ -127,7 +129,7 @@ HEREDOC;
           'year' => $matches[1],
           'month' => $matches[2],
           'day' => $matches[3],
-          'full' => implode("-", array_slice($matches, 1, 3)),
+          'date' => implode("-", array_slice($matches, 1, 3)),
           'name' => $matches[4]
       ];
     }
@@ -142,7 +144,7 @@ HEREDOC;
 
   public function sort($arr) {
     usort($arr, function($a, $b) {
-      return $b['date']['full'] <=> $a['date']['full'];
+      return $b['details']['date'] <=> $a['details']['date'];
     });
     return $arr;
   }
