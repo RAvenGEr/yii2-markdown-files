@@ -55,7 +55,7 @@ HEREDOC;
   }
 
   public function parse() {
-    $parser = new \Hyn\Frontmatter\Parser(new \cebe\markdown\Markdown);
+    $parser = new \Hyn\Frontmatter\Parser(new \cebe\markdown\GithubMarkdown);
     $parser->setFrontmatter(\Hyn\Frontmatter\Frontmatters\YamlFrontmatter::class);
 
     $posts = [];
@@ -87,7 +87,7 @@ HEREDOC;
         $details = $this->parseName($file);
         if ($details) {
           if ($mdParser === null) {
-            $mdParser = new \cebe\markdown\Markdown;
+            $mdParser = new \cebe\markdown\GithubMarkdown;
           }
           $parser = new \Hyn\Frontmatter\Parser($mdParser);
           $parser->setFrontmatter(\Hyn\Frontmatter\Frontmatters\YamlFrontmatter::class);
